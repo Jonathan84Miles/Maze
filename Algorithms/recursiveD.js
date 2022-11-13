@@ -67,15 +67,15 @@ async function divide(startX, endX, startY, endY, board) {
         newEX = endX;
         newEY = endY;
 
-        // color left region
-        await colorRegion(startX, newEndX, startY, newEndY, board, "red");
-        await sleep(timer2);
-        await colorRegion(startX, newEndX, startY, newEndY, board, "white");
+        // // color left region
+        // await colorRegion(startX, newEndX, startY, newEndY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, newEndX, startY, newEndY, board, "white");
 
-        // color right region
-        await colorRegion(newStartX, endX, newStartY, endY, board, "red");
-        await sleep(timer2);
-        await colorRegion(newStartX, endX, newStartY, endY, board, "white");
+        // // color right region
+        // await colorRegion(newStartX, endX, newStartY, endY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(newStartX, endX, newStartY, endY, board, "white");
 
     }
 
@@ -106,16 +106,16 @@ async function divide(startX, endX, startY, endY, board) {
         newEX = endX;
         newEY = endY;
 
-        // Color top region
-        await colorRegion(startX, endX, startY, newEndY, board, "red");
-        await sleep(timer2);
-        await colorRegion(startX, endX, startY, newEndY, board, "white");
-        await sleep(timer2);
+        // // Color top region
+        // await colorRegion(startX, endX, startY, newEndY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, endX, startY, newEndY, board, "white");
+        // await sleep(timer2);
 
-        // color bottom region
-        await colorRegion(startX, endX, newStartY, endY, board, "red");
-        await sleep(timer2);
-        await colorRegion(startX, endX, newStartY, endY, board, "white");
+        // // color bottom region
+        // await colorRegion(startX, endX, newStartY, endY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, endX, newStartY, endY, board, "white");
     }
     // pass left and top args
     console.log("recursing left")
