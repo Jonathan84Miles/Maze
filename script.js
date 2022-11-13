@@ -1,6 +1,7 @@
 //import { recursiveDivision } from "./Algorithms/rd.js"
 import { primsAlgorithm } from "./Algorithms/primsAlgorithm.js"
-import { recursiveDivision } from "./Algorithms/recursiveD.js"
+import { recursiveBacktracking } from "./Algorithms/recursiveBacktracking.js";
+import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
 (function setup() {
     let width, height;
     console.log("here")
@@ -30,18 +31,24 @@ import { recursiveDivision } from "./Algorithms/recursiveD.js"
         console.log(board);
     }
 
-    // Maze button listener
+
+
+    // Maze button listeners
     document.getElementById("maze").onclick = function(event){
        recursiveDivision(board[0].length, board.length, board);
-     // recursiveBacktracking(board, board[0].length, board.length);
     };
 
     // Prims button listener
     document.getElementById("prims").onclick = function(event){
-        console.log(board[0].length)
-        console.log(board.length)
         primsAlgorithm(board, width, height);
     }
+
+    // Recursive Backtracking listener
+    document.getElementById("recursiveBacktracking").onclick = function(event){
+        console.log("clicked")
+        recursiveBacktracking(board[0].length, board.length, board);
+    }
+
     document.getElementById("container").addEventListener('mouseover', function (event) {
         // need to check that it is left button down
         // currently works with right button

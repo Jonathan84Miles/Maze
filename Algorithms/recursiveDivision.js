@@ -1,202 +1,234 @@
-export async function recursiveDivision(board, width, height) {
-    let horizontal = true;
-    // Create 1 cell wide black border around grid
+const timer = 1;
+const timer2 = 500;
+export async function recursiveDivision(width, height, board) {
+    await initialise(width, height, board);
 
-    // top
-    for (let col = 0; col < width; col++) {
-        let element = document.getElementById(0 + "-" + col);
-        //  console.log(element)
-        element.style.backgroundColor = "black";
-        await sleep(10)
-    }
+    await divide(1, width - 2, 1, height - 2);
 
-    // right (top down)
-    for (let row = 0; row < height; row++) {
-        //   console.log(width - 1)
-        let element = document.getElementById(row + "-" + (width - 1));
-        //    console.log(element)
-        element.style.backgroundColor = "black";
-        await sleep(10)
-    }
-
-    // Bottom (right to left)
-    for (let col = width - 1; col >= 0; col--) {
-        let element = document.getElementById(height - 1 + "-" + col);
-        //     console.log(element)
-        element.style.backgroundColor = "black";
-        await sleep(10)
-    }
-
-    // left (bottom to top)
-    for (let row = height - 1; row >= 0; row--) {
-        //   console.log("row", row)
-        let element = document.getElementById(row + "-" + 0);
-        //   console.log(element)
-        element.style.backgroundColor = "black";
-        await sleep(10)
-    }
-
-    await divide(1, 1, height - 1, width - 1, board);
 }
-
-async function divide(startX, startY, height, width, board) {
- //    https://gist.github.com/jnx/5babc722ce4bcceba9d6c4491a49a593
-    console.log("divide called")
-    let secondTimer = 200;
-    let sleepTime = 1;
-    await sleep(2000);
-    let height2, width2, x2, y2, newHeight, newWidth;
-    let newWall, newHole;
+async function divide(startX, endX, startY, endY, board) {
 
     let orientation;
+    let newStartX, newStartY, newEndX, newEndY;
+    let wallIndex, holeIndex;
+    let width, height;
+    let newEX, newEY;
+    [width, height] = getRegionDimensions(startX, endX, startY, endY);
 
     if (width > height) {
-        orientation = "horizontal";
+        orientation = "horizontal"
+    } else {
+        orientation = "vertical"
     }
-    else {
-        orientation = "vertical";
-    }
-
-    console.log("\nOrientation is", orientation)
-    console.log("startX", startX);
-    console.log("startY", startY);
-    console.log("width", width);
-    console.log("height", height);
-
-    // If orientation is horizontal ( landscape ) draw vertical wall 
-    if (orientation == "horizontal") {
-        console.log(" Entering horizontal if statement")
-        if (width < 5 || height <=2) {
-            console.log("width less than 5, returning")
-            return;
-        }
-        await colorRegion(startX, startY, width, height, "red");
-        // Get random even number between x+2 and width-3
-        console.log("generating random numbers")
-
-        newWall = getRandomEven(startX + 1, width - 3);
-        console.log("Got random even number")
-
-        newHole = getRandomOdd(startY, (startY + height - 1));
-        console.log("got Random odd number")
-
-        await colorRegion(startX, startY, width, height, "white");
-        // Draw Line
-        console.log("Drawing line from ", startY, " to ", (startY + height - 1));
-        for (let i = startY; i < (startY + height - 1); i++) {
-            document.getElementById(i + "-" + newWall).style.backgroundColor = "black";
-            await sleep(sleepTime)
-        }
-
-        // Draw hole
-        document.getElementById(newHole + "-" + newWall).style.backgroundColor = "white";
-        await sleep(sleepTime)
-
-        // Left section bounds
-        newHeight = height;
-        newWidth = newWall - startX + 1;
-        //  document.getElementById(height + "-" + width).style.backgroundColor = "red";
-
-        // Right section bounds
-        y2 = startY;
-        x2 = newWall + 1;
-        height2 = height;
-        width2 = startX + width - newWall - 1;
+    orientation = getOrientation(startX, endX, startY, endY);
+    console.log("\nstart");
+    console.log("Orientation", orientation);
+    console.log("startX", startX, "startY", startY)
+    console.log("endX", endX, "endY", endY);
+    console.log("width", width, "height", height);
 
 
-    }
-
-    // If orientation is vertical ( portrait ) draw horizontal wall 
     if (orientation == "vertical") {
-        console.log(" Entering vertical if statement")
-        console.log("vertical")
-        if (height < 5 || width <=2) {
-            console.log("height less than 5, returning")
+        // Check region size can be split virtically
+        if (width < 3 || height < 2) {
+            console.log("exiting")
             return;
         }
 
-        await colorRegion(startX, startY, width, height, "red");
 
-        // Get random even number between x+2 and width-3
-        console.log("generating random numbers")
-        newWall = getRandomEven(startY + 1, height - 3);
-        newHole = getRandomOdd(startX, (startX + width - 1));
-        console.log("got Random numbers")
+        // color region 
+        // await colorRegion(startX, endX, startY, endY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, endX, startY, endY, board, "white");
 
-        await colorRegion(startX, startY, width, height, "white");
-        // Draw Line
-        console.log("Drawing line from ", startX, " to ", (startX + width-1));
-        for (let i = startX; i < (startX + width - 1); i++) {
-            console.log("Entering draw line loop")
-            document.getElementById(newWall + "-" + i).style.backgroundColor = "black";
-            await sleep(sleepTime)
+        // draw wall
+        wallIndex = getRandomEvenInt(startX, endX);
+
+        let min = 10000000, max = 0;
+        for (let i = 0; i < 10000; i++) {
+            let rand = getRandomEvenInt(startX, endX);
+            if (rand > max) {
+                max = rand;
+            }
+            if (rand < min) min = rand;
         }
-       
-        // Draw hole
-        document.getElementById(newWall + "-" + newHole).style.backgroundColor = "white";
-        await sleep(sleepTime)
-        // Top section bounds
-        newHeight = newWall - startY + 1;
-        newWidth = width;
-        // document.getElementById(height + "-" + width).style.backgroundColor = "red";
+        console.log("result", min, max)
+        holeIndex = getRandomOddInt(startY, endY);
 
-       // Bottom Section bounds
-        y2 = newWall;
-        x2 = startX;
-        height2 = startY + height - newWall;
-        width2 = width;
+        await drawVerticalWall(wallIndex, holeIndex, startY, endY, board);
+
+        // Left bounds
+        newEndY = endY;
+        newEndX = wallIndex - 1;
+
+        // Set bounds for new right region
+        newStartX = wallIndex + 1;
+        newStartY = startY;
+        newEX = endX;
+        newEY = endY;
+
+        // // color left region
+        // await colorRegion(startX, newEndX, startY, newEndY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, newEndX, startY, newEndY, board, "white");
+
+        // // color right region
+        // await colorRegion(newStartX, endX, newStartY, endY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(newStartX, endX, newStartY, endY, board, "white");
 
     }
 
+    if (orientation == "horizontal") {
+        if (width < 2 || height < 3) {
+            console.log("exiting")
+            return;
+        }
 
-  // await divide(x2, y2, height2, width2, board);
-    console.log("Starting to recurse right")
-    sleep(secondTimer)
-    await divide(startX, startY, newHeight, newWidth, board);
+        // color region
+        // await colorRegion(startX, endX, startY, endY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, endX, startY, endY, board, "white");
+
+        // draw wall
+        wallIndex = getRandomEvenInt(startY, endY);
+        console.log("WallIndex", wallIndex)
+        holeIndex = getRandomOddInt(startX, endX);
+        await drawHorizontalWall(wallIndex, holeIndex, startX, endX, board);
+
+        // Set bounds for new top region
+        newEndX = endX;
+        newEndY = wallIndex - 1;
+
+        // Bottom Bounds
+        newStartY = wallIndex + 1;
+        newStartX = startX;
+        newEX = endX;
+        newEY = endY;
+
+        // // Color top region
+        // await colorRegion(startX, endX, startY, newEndY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, endX, startY, newEndY, board, "white");
+        // await sleep(timer2);
+
+        // // color bottom region
+        // await colorRegion(startX, endX, newStartY, endY, board, "red");
+        // await sleep(timer2);
+        // await colorRegion(startX, endX, newStartY, endY, board, "white");
+    }
+    // pass left and top args
+    console.log("recursing left")
+      await divide(startX, newEndX, startY, newEndY, board)
+
+    // pass right and down args
+    console.log("recursing right")
+    await divide(newStartX, endX, newStartY, endY, board);
+
+}
+function getRegionDimensions(startX, endX, startY, endY) {
+    let width = endX - startX + 1;
+    let height = endY - startY + 1;
+    return [width, height];
+
+}
+async function drawHorizontalWall(wallIndex, holeIndex, startX, endX, board) {
+    let wallLength = endX - startX + 1;
+
+    console.log("\nwall length", wallLength);
+    console.log("wall start x", startX);
+    console.log("endX", endX);
+    console.log("wall Index", wallIndex)
+    let cell;
+    for (let i = startX; i <= endX; i++) {
+        if (i == holeIndex) continue;
+        cell = document.getElementById(wallIndex + "-" + i);
+        cell.style.backgroundColor = "black";
+        await sleep(timer);
+    }
+
 }
 
+async function drawVerticalWall(wallIndex, holeIndex, startY, endY, board) {
+    let wallHeight = endY - startY + 1;
+    let cell;
+    console.log("wallIndex", wallIndex)
+    for (let i = startY; i <= endY; i++) {
+        if (i == holeIndex) continue;
+        cell = document.getElementById(i + "-" + wallIndex);
+        cell.style.backgroundColor = "black";
+        await sleep(timer);
+    }
+}
 
-function getRandomEven(min, max) {
-    console.log(min)
-    console.log(max)
-    let rand = Math.floor(Math.random() * (max - min + 1) + min);
+function getOrientation(startX, endX, startY, endY) {
+    let width = endX - startX + 1;
+    console.log("width", width);
+    let height = endY - startY + 1;
+    console.log("height", height);
+    if (width > height) return "vertical";
+    if (height >= width) return "horizontal";
+}
+
+async function colorRegion(startX, endX, startY, endY, board, color) {
+    let cell;
+    for (let i = startY; i <= endY; i++) {
+        for (let j = startX; j <= endX; j++) {
+            cell = document.getElementById(i + "-" + j);
+            cell.style.backgroundColor = color;
+        }
+    }
+}
+
+async function initialise(width, height, board) {
+    let cell, row = 0;
+    // Top
+    for (let i = 0; i < width; i++) {
+        cell = document.getElementById(row + "-" + i);
+        cell.style.backgroundColor = "black";
+        await sleep(timer);
+    }
+
+    // Right
+    for (let i = 0; i < height; i++) {
+        let cell, col = width - 1;
+        cell = cell = document.getElementById(i + "-" + col);
+        cell.style.backgroundColor = "black";
+        await sleep(timer);
+    }
+
+    // Bottom
+    for (let i = width - 1; i >= 0; i--) {
+        let cell, row = height - 1;
+        cell = cell = document.getElementById(row + "-" + i);
+        cell.style.backgroundColor = "black";
+        await sleep(timer);
+    }
+
+    // Left
+    for (let i = height - 1; i >= 0; i--) {
+        let cell, col = 0;
+        cell = cell = document.getElementById(i + "-" + col);
+        cell.style.backgroundColor = "black";
+        await sleep(timer);
+    }
+}
+
+function getRandomOddInt(min, max) {
+    if (max % 2 == 0) --max;
+    if (min % 2 == 0) ++min;
+    return min + 2 * Math.floor((Math.random() * ((max - min) / 2 + 1)));
+
+}
+
+function getRandomEvenInt(min, max) {
+    let rand = 1;
     while (rand % 2 != 0) {
-        rand = Math.floor(Math.random() * (max - min + 1) + min);
-        console.log("even", rand);
+        rand = Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    return rand;
+    return rand
 }
 
-function getRandomOdd(min, max) {
-    console.log(min)
-    console.log(max)
-    let rand = Math.floor(Math.random() * (max - min + 1) + min);
-
-    while (rand % 2 == 0) {
-
-        rand = Math.floor(Math.random() * (max - min + 1) + min);
-        console.log("odd", rand);
-    }
-    return rand;
-}
-
-async function colorRegion(x, y, width, height, color) {
-    // console.log("coloring")
-    // console.log("y", y)
-    // console.log("x", x)
-    // console.log("height", height)
-    // console.log("width", width);
-
-    await sleep(200);
-
-    for (let i = y; i < height; i++) {
-        for (let j = x; j < (x + width) - 1; j++) {
-        //    console.log("coloring", i, j)
-            document.getElementById(i + "-" + j).style.backgroundColor = color;
-        }
-    }
-    await sleep(200);
-}
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
