@@ -1,9 +1,17 @@
-//import { recursiveDivision } from "./Algorithms/rd.js"
-import { primsAlgorithm } from "./Algorithms/primsAlgorithm.js"
-import { recursiveBacktracking } from "./Algorithms/recursiveBacktracking.js";
-import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
-import { depthFirstSearch } from "./Algorithms/Search/DepthFirstSearch.js";
-import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
+import { recursiveDivision } from "./Algorithms/Maze/recursiveDivision.js"
+import { depthFirstSearch } from "./Algorithms/Search/depthFirstSearch.js";
+import { breadthFirstSearch } from "./Algorithms/Search/bredthFirstSearch.js"
+import { recursiveBacktracking } from "./Algorithms/Maze/recursiveBacktracking.js";
+
+class Cell {
+    constructor(x, y, isPath) {
+        this.x = x;
+        this.y = y;
+        this.isPath = isPath;
+        this.isVisited = false;
+    }
+}
+
 (function setup() {
     let width, height;
     console.log("here")
@@ -21,7 +29,7 @@ import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
             const row = container.appendChild(document.createElement('div'));
             let colArray = [];
             for (let j = 0; j < cols; j++) {
-                colArray[j] = 0;
+                colArray[j] = new Cell(j, i, true);
 
                 const cell = document.createElement('div');
                 cell.id = i + "-" + j;
@@ -29,46 +37,72 @@ import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
                 row.appendChild(cell);
             }
             board.push(colArray);
-
         }
         console.log(board);
     }
-
-
-    // DFS
-    document.getElementById("dfs").onclick = function (event) {
-        depthFirstSearch(startCell[1], startCell[0], goalCell[1],goalCell[0], board);
-    };
-       // BFS
-       document.getElementById("bfs").onclick = function (event) {
-        breadthFirstSearch(startCell[1], startCell[0], goalCell[1],goalCell[0], board);
-    };
+    function printBoard(board) {
+        let row;
+        for (let i = 0; i < board.length; i++) {
+            row = "";
+            for (let j = 0; j < board[0].length; j++) {
+                if (board[i][j].isPath == true) {
+                    row += "0";
+                } else {
+                    row += "1";
+                }
+            }
+            console.log(row)
+        }
+    }
 
     // Maze button listeners
-    document.getElementById("maze").onclick = function (event) {
-       board = recursiveDivision(board[0].length, board.length, board);
+    document.getElementById("recursiveDivision").onclick = async function (event) {
+        board = await recursiveDivision(board[0].length, board.length, board);
+        console.log("returned board");
+        printBoard(board);
+        placeStartCell(board);
+        placeGoalCell(board);
     };
 
-    // Prims button listener
-    document.getElementById("prims").onclick = function (event) {
-        primsAlgorithm(board, width, height);
-    }
-
-    // Recursive Backtracking listener
     document.getElementById("recursiveBacktracking").onclick = async function (event) {
-        console.log("clicked")
-      board = await recursiveBacktracking(board[0].length, board.length, board);
-      console.log("here")
-      console.log("board",board)
+        board = await recursiveBacktracking(board[0].length, board.length, board);
+        console.log("returned board");
+        printBoard(board);
+        placeStartCell(board);
+        placeGoalCell(board);
+    };
+
+    // Search button listeners
+    document.getElementById("dfs").onclick = async function (event) {
+        await depthFirstSearch(startCell[1], startCell[0], goalCell[1], goalCell[0], board);
     }
 
+    document.getElementById("bfs").onclick = async function (event) {
+        await breadthFirstSearch(startCell[1], startCell[0], goalCell[1], goalCell[0], board);
+    }
+
+    function placeStartCell(board) {
+        let randX = 0, randY = 0;
+        while (!board[randY][randX].isPath) {
+            randX = getRandomInt(0, board.length / 4);
+            randY = getRandomInt(0, board[0].length / 4);
+        }
+        startCell = [randY, randX];
+        console.log(startCell)
+        document.getElementById(randY+"-"+randX).style.backgroundColor = "green";
+    }
+    function placeGoalCell(board) {
+        let randX = 0, randY = 0;
+        while (!board[randY][randX].isPath) {
+            randX = getRandomInt(board.length * 0.75, board[0].length-1);
+            randY = getRandomInt(board[0].length /3, board.length-1);
+        }
+        goalCell = [randY, randX];
+        console.log(goalCell)
+        document.getElementById(randY+"-"+randX).style.backgroundColor = "red";
+    }
     document.getElementById("container").addEventListener('mouseover', function (event) {
-        // need to check that it is left button down
-        // currently works with right button
 
-        // Also need to stop color applying to the container div
-
-        // Also need to prevent it from overwriting the goal cell
         if (isMouseDown) {
             console.log("mouse is down")
             console.log(window.getComputedStyle(event.target).backgroundColor)
@@ -147,7 +181,7 @@ import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
                     goalCell.setAttribute("style", "background-color: white");
                     element.setAttribute("style", "background-color: red");
                     console.log(window.getComputedStyle(element).backgroundColor);
-                    
+
                     goalCell = element.id.split("-");
                 }
             } else {
@@ -185,5 +219,8 @@ import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
         })
     })
 
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
 
 })()
