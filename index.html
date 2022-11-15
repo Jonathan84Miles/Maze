@@ -6,19 +6,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <script type="module" src="sortVisualizer.js" defer></script>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" type="module" defer></script>
 </head>
 
 <body>
+    <div id="nav">
+        <label for="algorithm">Choose an Algorithm:</label>
+        <select name="algorithm" id="algorithmSelect">
+            <option value="bubbleSort">Bubble Sort</option>
+            <option value="selectionSort">Selection Sort</option>
+            <option value="insertionSort">Insertion Sort</option>
+            <option value="quickSort">Quick Sort</option>
+            <option value="mergeSort">Merge Sort</option>
+        </select>
 
-    <div id="container"></div>
+        <label for="sizeSlider">Array Size:</label>
+        <input type="range" id="sizeSlider" name="sizeSlider" min="10" max="240">
 
-    <button class="mazeBtn" id="resetButton">reset</button>
-    <button class="mazeBtn" id="maze">Recursive division</button>
-    <button class="mazeBtn" id="prims">Prims Algorithm</button>
-    <button class="mazeBtn" id="recursiveBacktracking">Recusive Backtracking</button>
-    
+        
+        <label for="speedSlider">Select speed:</label>
+        <input type="range" id="speedSlider" name="speedSlider" min="1" max="50">
+
+        <label for="sortButton">Click to sort</label>
+        <input type="button" id="sortBtn" name="sortButton" value="Sort">
+    </div>
+    <div id="barContainer">
+
+    </div>
 
 
 </body>

@@ -1,23 +1,13 @@
-.cell {
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-    box-sizing: border-box;
+#barContainer{
+    display: flex;
+    flex-direction: row;
+    height: 700px;
+    width: 1200px;
+    background-color: black;
+}
+.bar{
+    height: 40px;
+    background-color: blue;
     display: inline-block;
-    width: 25px;
-    height: 25px;
-  }
-
-  .cell:nth-child(n+2){
-    border-left: 0px;
-  }
-  
-  #container {
-
-    width: 1275px;
-border-left: 1px solid black;
-border-bottom: 1px solid black;
-  }
-  
-  #container>div {
-    height: 25px;
-  }
+    margin-right: 1px;
+}
