@@ -9,17 +9,18 @@ class Cell {
     }
 }
 export async function recursiveBacktracking(width, height, board) {
-    console.log("here")
+    let stack = [];
+    console.log("first board",JSON.stringify(board))
     await initialise(width, height, board);
-
-    await generateMaze(1, 1, board)
-
+    await generateMaze(1, 1, board);
+    console.log("end board",JSON.stringify(board));
+    return board;
 }
 
 async function generateMaze(x, y, board) {
     let cell = document.getElementById(y + "-" + x);
     let neighbours = [];
-    document.getElementById(y + "-" + x).style.backgroundColor = "red"
+    document.getElementById(y + "-" + x).style.backgroundColor = "white"
     board[y][x] = 0;
     await sleep(timer2);
 
@@ -27,15 +28,11 @@ async function generateMaze(x, y, board) {
     // Check for adjacent cells to visit
     neighbours = await getUnvisitedNeighbours(x, y, board);
 
-    for (let i = 0; i < neighbours.length; i++) {
-        let cell2 = document.getElementById(neighbours[i][2] + "-" + neighbours[i][1])
-        await sleep(timer2)
-    }
-
     if (neighbours.length == 0) {
         console.log("no neighbours")
-        document.getElementById(y + "-" + x).style.color = "white";
+    await sleep(timer)
         return;
+
     } else {
         while (neighbours.length > 0) {
             await sleep(timer);
@@ -44,7 +41,6 @@ async function generateMaze(x, y, board) {
             let chosenNeighbour = neighbours[rand];
             neighbours.splice(rand, 1)
             // remove rand index from neighbours;
-
 
             let direction = chosenNeighbour[0];
             let newX = chosenNeighbour[1], newY = chosenNeighbour[2];
@@ -73,13 +69,13 @@ async function generateMaze(x, y, board) {
             if (board[newY][newX] == 0.5) {
                 console.log("here2")
                 board[newY][newX] = 0;
-
                 // new Path cell
-              
-                document.getElementById(newY + "-" + newX).style.backgroundColor = "red";
-                document.getElementById(pathY + "-" + pathX).style.backgroundColor = "red";
+
+                document.getElementById(newY + "-" + newX).style.backgroundColor = "white";
+                document.getElementById(pathY + "-" + pathX).style.backgroundColor = "white";
                 board[pathY][pathX] = 0;
                 await sleep(timer)
+
                 // Recursed
                 await generateMaze(newX, newY, board);
             }

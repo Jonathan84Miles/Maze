@@ -2,9 +2,12 @@
 import { primsAlgorithm } from "./Algorithms/primsAlgorithm.js"
 import { recursiveBacktracking } from "./Algorithms/recursiveBacktracking.js";
 import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
+import { depthFirstSearch } from "./Algorithms/Search/DepthFirstSearch.js";
+import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
 (function setup() {
     let width, height;
     console.log("here")
+    let startCell;
     let goalCell, isMouseDown = false;
     let board = [];
     let resetButton = document.getElementById("resetButton");
@@ -32,21 +35,31 @@ import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
     }
 
 
+    // DFS
+    document.getElementById("dfs").onclick = function (event) {
+        depthFirstSearch(startCell[1], startCell[0], goalCell[1],goalCell[0], board);
+    };
+       // BFS
+       document.getElementById("bfs").onclick = function (event) {
+        breadthFirstSearch(startCell[1], startCell[0], goalCell[1],goalCell[0], board);
+    };
 
     // Maze button listeners
-    document.getElementById("maze").onclick = function(event){
-       recursiveDivision(board[0].length, board.length, board);
+    document.getElementById("maze").onclick = function (event) {
+       board = recursiveDivision(board[0].length, board.length, board);
     };
 
     // Prims button listener
-    document.getElementById("prims").onclick = function(event){
+    document.getElementById("prims").onclick = function (event) {
         primsAlgorithm(board, width, height);
     }
 
     // Recursive Backtracking listener
-    document.getElementById("recursiveBacktracking").onclick = function(event){
+    document.getElementById("recursiveBacktracking").onclick = async function (event) {
         console.log("clicked")
-        recursiveBacktracking(board[0].length, board.length, board);
+      board = await recursiveBacktracking(board[0].length, board.length, board);
+      console.log("here")
+      console.log("board",board)
     }
 
     document.getElementById("container").addEventListener('mouseover', function (event) {
@@ -65,7 +78,7 @@ import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
                 event.target.style.backgroundColor = "blue";
                 let coords = getCellCoords(event.target.id);
                 console.log(coords)
-               board[coords[0]][coords[1]] = 1;
+                board[coords[0]][coords[1]] = 1;
             }
         }
     })
@@ -90,11 +103,12 @@ import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
                 console.log("goal cell")
                 return;
             }
-            if (element.style.backgroundColor == "blue") {
+            if (element.style.backgroundColor == "green") {
                 element.setAttribute("style", "background-color: white");
             }
             else {
-                event.target.setAttribute("style", "background-color: blue")
+                event.target.setAttribute("style", "background-color: green")
+                startCell = event.target.id.split("-");
                 console.log(event.target);
             }
         }
@@ -118,10 +132,9 @@ import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
             return;
         }
         if (e.target && e.target.className == "cell") {
-           let element = e.target;
+            let element = e.target;
 
             if (element.getAttribute("backgroundColor") == "red") {
-
                 console.log("its red");
             }
 
@@ -134,12 +147,13 @@ import { recursiveDivision } from "./Algorithms/recursiveDivision.js"
                     goalCell.setAttribute("style", "background-color: white");
                     element.setAttribute("style", "background-color: red");
                     console.log(window.getComputedStyle(element).backgroundColor);
-                    goalCell = element;
+                    
+                    goalCell = element.id.split("-");
                 }
             } else {
                 // goalCell does not exist
                 element.setAttribute("style", "background-color: red");
-                goalCell = element;
+                goalCell = element.id.split("-");
             }
 
 
