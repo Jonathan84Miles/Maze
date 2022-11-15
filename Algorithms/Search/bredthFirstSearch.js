@@ -37,7 +37,7 @@ async function search(startX, startY, goalX, goalY, board) {
         x = curr.x;
         y = curr.y;
         if (!(x == startX && y == startY) && !(x == goalX && y == goalY)) {
-            document.getElementById(y + "-" + x).style.backgroundColor = "rgb(52, 152, 219)";
+            document.getElementById(y + "-" + x).style.backgroundColor = "blue";
         }
 
         await sleep(timer);
@@ -59,7 +59,7 @@ async function search(startX, startY, goalX, goalY, board) {
 
         }
         if (!(x == startX && y == startY) && !(x == goalX && y == goalY)) {
-            document.getElementById(y + "-" + x).style.backgroundColor = "rgb(54, 69, 79)";
+            document.getElementById(y + "-" + x).style.backgroundColor = "orange";
         }
 
     }
@@ -69,7 +69,7 @@ async function search(startX, startY, goalX, goalY, board) {
 async function drawPath(path, board) {
     console.log("drawing path")
     for (let i = 1; i < path.length; i++) {
-        document.getElementById(path[i][1] + "-" + path[i][0]).style.backgroundColor = "rgb(52, 152, 219)"
+        document.getElementById(path[i][1] + "-" + path[i][0]).style.backgroundColor = "blue"
         await sleep(timer);
     }
 }

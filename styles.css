@@ -5,6 +5,7 @@
     display: inline-block;
     width: 25px;
     height: 25px;
+    background-color: rgb(208, 211, 212);
   }
 
   .cell:nth-child(n+2){

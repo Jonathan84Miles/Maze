@@ -89,7 +89,7 @@ class Cell {
         }
         startCell = [randY, randX];
         console.log(startCell)
-        document.getElementById(randY+"-"+randX).style.backgroundColor = "green";
+        document.getElementById(randY+"-"+randX).style.backgroundColor = "rgb(23, 165, 137)";
     }
     function placeGoalCell(board) {
         let randX = 0, randY = 0;
@@ -99,7 +99,7 @@ class Cell {
         }
         goalCell = [randY, randX];
         console.log(goalCell)
-        document.getElementById(randY+"-"+randX).style.backgroundColor = "red";
+        document.getElementById(randY+"-"+randX).style.backgroundColor = "rgb(142, 68, 173)";
     }
     document.getElementById("container").addEventListener('mouseover', function (event) {
 

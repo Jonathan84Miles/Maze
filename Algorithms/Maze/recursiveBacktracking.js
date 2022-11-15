@@ -20,7 +20,7 @@ export async function recursiveBacktracking(width, height, board) {
 async function generateMaze(x, y, board) {
     let cell = document.getElementById(y + "-" + x);
     let neighbours = [];
-    document.getElementById(y + "-" + x).style.backgroundColor = "white"
+    document.getElementById(y + "-" + x).style.backgroundColor = "rgb(208, 211, 212)"
     board[y][x].isVisited = true;
     board[y][x].isPath = true;
     await sleep(timer2);
@@ -73,8 +73,8 @@ async function generateMaze(x, y, board) {
                 board[newY][newX].isPath = true;
                 // new Path cell
 
-                document.getElementById(newY + "-" + newX).style.backgroundColor = "white";
-                document.getElementById(pathY + "-" + pathX).style.backgroundColor = "white";
+                document.getElementById(newY + "-" + newX).style.backgroundColor = "rgb(208, 211, 212)";
+                document.getElementById(pathY + "-" + pathX).style.backgroundColor = "rgb(208, 211, 212)";
                
                 board[pathY][pathX].isPath = true;
                 board[pathY][pathX].isVisited = true;
@@ -134,10 +134,10 @@ async function initialise(width, height, board) {
         for (let j = 0; j < width; j++) {
             if (i % 2 == 0 || j % 2 == 0) {
                 board[i][j].isPath = false;
-                document.getElementById(i + "-" + j).style.backgroundColor = "black"
+                document.getElementById(i + "-" + j).style.backgroundColor = "rgb(23, 32, 42)"
             } else {
                 board[i][j].isVisited = false;
-                document.getElementById(i + "-" + j).style.backgroundColor = "black"
+                document.getElementById(i + "-" + j).style.backgroundColor = "rgb(23, 32, 42)"
             }
         }
     }
@@ -146,7 +146,7 @@ async function initialise(width, height, board) {
     for (let i = 0; i < width; i++) {
         row = 0;
         board[row][i].isPath = false;;
-        document.getElementById(row + "-" + i).style.backgroundColor = "black";
+        document.getElementById(row + "-" + i).style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -154,7 +154,7 @@ async function initialise(width, height, board) {
     for (let i = 0; i < height; i++) {
         col = width - 1;
         board[i][col].isPath = false;
-        document.getElementById(i + "-" + col).style.backgroundColor = "black";
+        document.getElementById(i + "-" + col).style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -162,7 +162,7 @@ async function initialise(width, height, board) {
     for (let i = width - 1; i >= 0; i--) {
         let cell, row = height - 1;
         board[row][i].isPath = false;
-        document.getElementById(row + "-" + i).style.backgroundColor = "black";
+        document.getElementById(row + "-" + i).style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -170,7 +170,7 @@ async function initialise(width, height, board) {
     for (let i = height - 1; i >= 0; i--) {
         let cell, col = 0;
         board[row][i].isPath = false;
-        cell = document.getElementById(i + "-" + col).style.backgroundColor = "black";
+        cell = document.getElementById(i + "-" + col).style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 

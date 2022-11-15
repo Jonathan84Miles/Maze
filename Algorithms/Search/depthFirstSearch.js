@@ -29,9 +29,9 @@ async function search(x, y, endX, endY, board) {
         // Get next cell off of stack and colour it
         curr = stack[stack.length - 1];
         if (curr[0] == x && curr[1] == y) {
-            document.getElementById(curr[1] + "-" + curr[0]).style.backgroundColor = "green";
+            document.getElementById(curr[1] + "-" + curr[0]).style.backgroundColor = "rgb(23, 165, 137)";
         } else {
-            document.getElementById(curr[1] + "-" + curr[0]).style.backgroundColor = "blue";
+            document.getElementById(curr[1] + "-" + curr[0]).style.backgroundColor = "rgb(52, 152, 219)";
         }
         await sleep(timer) 
 
@@ -60,7 +60,7 @@ async function search(x, y, endX, endY, board) {
             // If no unvisited neighbours backtrack to previous junction and colour
             let r = stack.pop();
             if (!(curr[0] == x && curr[1] == y)) {
-            document.getElementById(r[1] + "-" + r[0]).style.backgroundColor = "orange";
+            document.getElementById(r[1] + "-" + r[0]).style.backgroundColor = "rgb(54, 69, 79)";
             }
         }
     }

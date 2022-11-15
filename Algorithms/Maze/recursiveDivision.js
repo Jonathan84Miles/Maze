@@ -86,7 +86,7 @@ async function drawHorizontalWall(wallIndex, holeIndex, startX, endX, board) {
         if (i == holeIndex) continue;
         cell = document.getElementById(wallIndex + "-" + i);
         board[wallIndex][i].isPath = false;
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -99,7 +99,7 @@ async function drawVerticalWall(wallIndex, holeIndex, startY, endY, board) {
         if (i == holeIndex) continue;
         cell = document.getElementById(i + "-" + wallIndex);
         board[i][wallIndex].isPath = false;
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 }
@@ -128,7 +128,7 @@ async function initialise(width, height, board) {
     for (let i = 0; i < width; i++) {
         cell = document.getElementById(row + "-" + i);
         board[row][i].isPath = false;
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -137,7 +137,7 @@ async function initialise(width, height, board) {
         let cell, col = width - 1;
         cell = cell = document.getElementById(i + "-" + col);
         board[i][col].isPath = false;
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -146,7 +146,7 @@ async function initialise(width, height, board) {
         let cell, row = height - 1;
         cell = cell = document.getElementById(row + "-" + i);
         board[row][i].isPath = false;
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 
@@ -155,7 +155,7 @@ async function initialise(width, height, board) {
         let cell, col = 0;
         cell = cell = document.getElementById(i + "-" + col);
         board[i][col].isPath = false;
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "rgb(23, 32, 42)";
         await sleep(timer);
     }
 }
