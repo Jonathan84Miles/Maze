@@ -1,6 +1,6 @@
 import { recursiveDivision } from "./Algorithms/Maze/recursiveDivision.js"
 import { depthFirstSearch } from "./Algorithms/Search/depthFirstSearch.js";
-import { breadthFirstSearch } from "./Algorithms/Search/bredthFirstSearch.js"
+import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
 import { recursiveBacktracking } from "./Algorithms/Maze/recursiveBacktracking.js";
 
 class Cell {
