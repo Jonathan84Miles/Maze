@@ -1,3 +1,5 @@
+import { getPathColor, getWallColor } from "../../script.js"
+
 let timer = 2;
 let timer2 = 2;
 class Cell {
@@ -9,8 +11,9 @@ class Cell {
     }
 }
 export async function recursiveBacktracking(width, height, board) {
+    const WALL_COLOR = getWallColor();
     let stack = [];
-    await initialise(width, height, board);
+    await initialise(width, height, board, WALL_COLOR);
     await generateMaze(1, 1, board);
     console.log("end board", board)
     return board;
@@ -18,9 +21,10 @@ export async function recursiveBacktracking(width, height, board) {
 }
 
 async function generateMaze(x, y, board) {
+    const PATH_COLOR = getPathColor();
     let cell = document.getElementById(y + "-" + x);
     let neighbours = [];
-    document.getElementById(y + "-" + x).style.backgroundColor = "rgb(208, 211, 212)"
+    document.getElementById(y + "-" + x).style.backgroundColor = PATH_COLOR;
     board[y][x].isVisited = true;
     board[y][x].isPath = true;
     await sleep(timer2);
@@ -31,7 +35,7 @@ async function generateMaze(x, y, board) {
 
     if (neighbours.length == 0) {
         console.log("no neighbours")
-    await sleep(timer)
+        await sleep(timer)
         return;
 
     } else {
@@ -73,9 +77,9 @@ async function generateMaze(x, y, board) {
                 board[newY][newX].isPath = true;
                 // new Path cell
 
-                document.getElementById(newY + "-" + newX).style.backgroundColor = "rgb(208, 211, 212)";
-                document.getElementById(pathY + "-" + pathX).style.backgroundColor = "rgb(208, 211, 212)";
-               
+                document.getElementById(newY + "-" + newX).style.backgroundColor = PATH_COLOR;
+                document.getElementById(pathY + "-" + pathX).style.backgroundColor = PATH_COLOR;
+
                 board[pathY][pathX].isPath = true;
                 board[pathY][pathX].isVisited = true;
                 await sleep(timer)
@@ -127,17 +131,17 @@ async function getUnvisitedNeighbours(x, y, board) {
     return neighbours;
 }
 
-async function initialise(width, height, board) {
+async function initialise(width, height, board, WALL_COLOR) {
     let row, col;
 
     for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
             if (i % 2 == 0 || j % 2 == 0) {
                 board[i][j].isPath = false;
-                document.getElementById(i + "-" + j).style.backgroundColor = "rgb(23, 32, 42)"
+                document.getElementById(i + "-" + j).style.backgroundColor = WALL_COLOR
             } else {
                 board[i][j].isVisited = false;
-                document.getElementById(i + "-" + j).style.backgroundColor = "rgb(23, 32, 42)"
+                document.getElementById(i + "-" + j).style.backgroundColor = WALL_COLOR
             }
         }
     }
@@ -146,7 +150,7 @@ async function initialise(width, height, board) {
     for (let i = 0; i < width; i++) {
         row = 0;
         board[row][i].isPath = false;;
-        document.getElementById(row + "-" + i).style.backgroundColor = "rgb(23, 32, 42)";
+        document.getElementById(row + "-" + i).style.backgroundColor = WALL_COLOR
         await sleep(timer);
     }
 
@@ -154,7 +158,7 @@ async function initialise(width, height, board) {
     for (let i = 0; i < height; i++) {
         col = width - 1;
         board[i][col].isPath = false;
-        document.getElementById(i + "-" + col).style.backgroundColor = "rgb(23, 32, 42)";
+        document.getElementById(i + "-" + col).style.backgroundColor = WALL_COLOR
         await sleep(timer);
     }
 
@@ -162,7 +166,7 @@ async function initialise(width, height, board) {
     for (let i = width - 1; i >= 0; i--) {
         let cell, row = height - 1;
         board[row][i].isPath = false;
-        document.getElementById(row + "-" + i).style.backgroundColor = "rgb(23, 32, 42)";
+        document.getElementById(row + "-" + i).style.backgroundColor = WALL_COLOR
         await sleep(timer);
     }
 
@@ -170,7 +174,7 @@ async function initialise(width, height, board) {
     for (let i = height - 1; i >= 0; i--) {
         let cell, col = 0;
         board[row][i].isPath = false;
-        cell = document.getElementById(i + "-" + col).style.backgroundColor = "rgb(23, 32, 42)";
+        cell = document.getElementById(i + "-" + col).style.backgroundColor = WALL_COLOR
         await sleep(timer);
     }
 
