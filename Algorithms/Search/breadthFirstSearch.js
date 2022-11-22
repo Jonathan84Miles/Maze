@@ -1,10 +1,12 @@
+import { getCurrentColor, getPathColor, getVisitedColor, getWallColor } from "../../script.js";
+
 let timer = 20;
 export async function breadthFirstSearch(startX, startY, goalX, goalY, board) {
     console.log("start board", board)
     initialise(board)
     let finish = await search(startX, startY, goalX, goalY, board);
     let path = getPath(finish);
-    await drawPath(path, board);
+    await drawPath(path, board, getCurrentColor());
     console.log(board[startY][startX]);
     console.log(board);
 }
@@ -21,6 +23,8 @@ function initialise(board) {
 }
 
 async function search(startX, startY, goalX, goalY, board) {
+    const CURRENT_COLOR = getCurrentColor();
+    const VISITED_COLOR = getVisitedColor();
     console.log("search board", board)
     let queue = [];
     let neighbours = [];
@@ -37,7 +41,7 @@ async function search(startX, startY, goalX, goalY, board) {
         x = curr.x;
         y = curr.y;
         if (!(x == startX && y == startY) && !(x == goalX && y == goalY)) {
-            document.getElementById(y + "-" + x).style.backgroundColor = "rgb(52, 152, 219)";
+            document.getElementById(y + "-" + x).style.backgroundColor = CURRENT_COLOR;
         }
 
         await sleep(timer);
@@ -57,15 +61,15 @@ async function search(startX, startY, goalX, goalY, board) {
 
         }
         if (!(x == startX && y == startY) && !(x == goalX && y == goalY)) {
-            document.getElementById(y + "-" + x).style.backgroundColor = "rgb(54, 69, 79)";
+            document.getElementById(y + "-" + x).style.backgroundColor = VISITED_COLOR;
         }
     }
 }
 
-async function drawPath(path, board) {
+async function drawPath(path, board, CURRENT_COLOR) {
     console.log("drawing path")
     for (let i = 1; i < path.length; i++) {
-        document.getElementById(path[i][1] + "-" + path[i][0]).style.backgroundColor = "rgb(52, 152, 219)"
+        document.getElementById(path[i][1] + "-" + path[i][0]).style.backgroundColor = CURRENT_COLOR
         await sleep(timer);
     }
 }

@@ -2,6 +2,8 @@ import { recursiveDivision } from "./Algorithms/Maze/recursiveDivision.js"
 import { depthFirstSearch } from "./Algorithms/Search/depthFirstSearch.js";
 import { breadthFirstSearch } from "./Algorithms/Search/breadthFirstSearch.js"
 import { recursiveBacktracking } from "./Algorithms/Maze/recursiveBacktracking.js";
+import { dijkstrasAlgorithm } from "./Algorithms/Search/DijkstrasAlgorithm.js"
+import { aStar } from "./Algorithms/Search/aStarAlgorithm.js";
 
 class Cell {
     constructor(x, y, isPath) {
@@ -13,6 +15,7 @@ class Cell {
 }
 
 (function setup() {
+    let draggingGoal = false;
     const PATH_COLOR = getPathColor();
     const WALL_COLOR = getWallColor();
     let width, height;
@@ -40,6 +43,8 @@ class Cell {
             }
             board.push(colArray);
         }
+        placeStartCell(board);
+        placeGoalCell(board);
         console.log(board);
     }
     function printBoard(board) {
@@ -56,7 +61,6 @@ class Cell {
             console.log(row)
         }
     }
-
 
     // Maze button listeners
     document.getElementById("recursiveDivision").onclick = async function (event) {
@@ -81,6 +85,12 @@ class Cell {
     document.getElementById("bfs").onclick = async function (event) {
         await breadthFirstSearch(startCell[1], startCell[0], goalCell[1], goalCell[0], board);
     };
+    document.getElementById("dijkstras").onclick = function (event) {
+        dijkstrasAlgorithm(startCell[1], startCell[0], board);
+    }
+    document.getElementById("astar").onclick = function (event) {
+        aStar(startCell[1], startCell[0],goalCell[1],goalCell[0], board);
+    }
 
     document.getElementById("clearPath").onclick = function (event) {
         clearPath(board);
@@ -105,20 +115,34 @@ class Cell {
         document.getElementById(startCell[0] + "-" + startCell[1]).isStart = false;
         startCell = null;
     }
+    
+    function createBoard(board) {
+        let cell;
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[0].length; j++) {
+                board[i][j] = new Cell(j, i, true);
+            }
+        }
+        // add start and goal 
+        placeStartCell(board);
+        placeGoalCell(board);
+        return board;
+    }
 
     function placeStartCell(board) {
-        let randX = 0, randY = 0;
+        let randX = Math.floor(board[0].length *0.25), randY = Math.floor(board.length*0.25);
         while (!board[randY][randX].isPath) {
             randX = getRandomInt(0, board.length / 4);
             randY = getRandomInt(0, board[0].length / 4);
         }
         board[randY][randX].isStart = true;
         startCell = [randY, randX];
-        console.log(startCell)
+        console.log("start cell ",startCell)
         document.getElementById(randY + "-" + randX).style.backgroundColor = "rgb(23, 165, 137)";
     }
+
     function placeGoalCell(board) {
-        let randX = 0, randY = 0;
+        let randX = Math.floor(board[0].length *0.75), randY = Math.floor(board.length*0.75);
         while (!board[randY][randX].isPath) {
             randX = getRandomInt(board.length * 0.75, board[0].length - 1);
             randY = getRandomInt(board[0].length / 3, board.length - 1);
@@ -128,6 +152,7 @@ class Cell {
         console.log(goalCell)
         document.getElementById(randY + "-" + randX).style.backgroundColor = "rgb(142, 68, 173)";
     }
+
     // document.getElementById("container").addEventListener('mouseover', function (event) {
 
     //     if (isMouseDown) {
@@ -234,6 +259,8 @@ class Cell {
         if (event.button == 0) {
             console.log("mouse up")
             isMouseDown = false;
+            draggingGoal = false;
+            console.log("\nDragging", draggingGoal)
         }
     }
 
@@ -249,27 +276,63 @@ class Cell {
         })
     })
 
-    function createBoard(board) {
-        let cell;
-        for (let i = 0; i < board.length; i++) {
-            for (let j = 0; j < board[0].length; j++) {
-                board[i][j] = new Cell(j, i, true);
-            }
-        }
-        
-        console.log(board)
-        return board;
-    }
-
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
+
+    // let cells = document.querySelectorAll(".cell");
+
+    // cells.forEach((cell) => {
+    //     console.log("listener added")
+    //     cell.addEventListener("mouseout", mouseOut);
+    //     cell.addEventListener("mouseenter", mouseEnter);
+    // });
+
+
+    //     function mouseOut(event) {
+
+    //        let coords = event.target.id.split("-");
+    //        console.log(coords)
+    //         if (board[coords[0]][coords[1]].isGoal == true) {
+    //             draggingGoal = true;
+    //             if (isMouseDown && draggingGoal) {
+    //                 // remove goal cell color, coords, attribute
+    //                 board[coords[0]][coords[1]].isGoal = false;
+    //                 document.getElementById(event.target.id).style.backgroundColor = PATH_COLOR;
+    //                 console.log("mouseout")
+    //             }
+    //         }
+    //     }
+
+    //     function mouseEnter(event, prev){
+    //         let coords = event.target.id.split("-");
+    //         console.log("coords",coords)
+    //         console.log("Is path ",board[coords[0]][coords[1]])
+    //         console.log("\nmouse enter")
+    //         console.log("dragging", draggingGoal)
+    //         if(isMouseDown && draggingGoal == true ){
+    //             // Set new goal cell coords, property, color
+    //             console.log("change color")
+    //             board[coords[0]][coords[1]].isGoal = true;
+    //             document.getElementById(event.target.id).style.backgroundColor = "rgb(142, 68, 173)"; 
+    //         }
+    //         draggingGoal = false;
+    //     }
 
 })()
 
 export function getPathColor() {
     return "rgb(208, 211, 212)";
 }
+
 export function getWallColor() {
     return "rgb(23, 32, 42)";
+}
+
+export function getVisitedColor(){
+    return "rgb(54, 69, 79)";
+}
+
+export function getCurrentColor(){
+    return "rgb(52, 152, 219)";
 }
