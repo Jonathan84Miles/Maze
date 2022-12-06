@@ -1,7 +1,8 @@
 import { getCurrentColor, getPathColor, getVisitedColor, getWallColor } from "../../script.js";
 
-export async function dijkstrasAlgorithm(startX, startY, board) {
-    let timer = 0;
+export async function dijkstrasAlgorithm(startX, startY, board, pathExists) {
+    console.log("dijstras started")
+    let timer = 20;
     // Mark all nodes unvisited. Create a set of all the unvisited nodes
     // called the unvisited set.
     const CURRENT_COLOR = getCurrentColor();
@@ -16,13 +17,11 @@ export async function dijkstrasAlgorithm(startX, startY, board) {
             if (board[i][j].x == startX && board[i][j].y == startY) {
                 board[i][j].cost = 0;
             } else {
-                board[i][j].weight = 1;
                 board[i][j].cost = Infinity;
             }
             unvisited.push(board[i][j]);
         }
     }
-    console.log(unvisited);
 
     while (!finished) {
         if (unvisited.length == 0) {
@@ -32,16 +31,12 @@ export async function dijkstrasAlgorithm(startX, startY, board) {
             // Get the unvisited cell with lowest cost
 
             currentCell = getLowestCostUnvisitedCell(unvisited);
-            console.log(currentCell);
-            if ( !(currentCell.isGoal || currentCell.isStart) ) {
-                console.log(currentCell.isGoal, currentCell.isStart)
-                document.getElementById(currentCell.y + "-" + currentCell.x).style.backgroundColor = CURRENT_COLOR;
-                await sleep(timer);
+            if (!(currentCell.isTarget || currentCell.isStart)) {
+
+                await colorCell(currentCell, CURRENT_COLOR, pathExists);
             }
             // get the unvisited neighbours for the current cell
-
             neighbours = getUnvisitedNeighbours(currentCell, unvisited);
-            console.log(neighbours)
 
             // Update the cost for each neighbour
             for (let i = 0; i < neighbours.length; i++) {
@@ -57,39 +52,47 @@ export async function dijkstrasAlgorithm(startX, startY, board) {
             // Add currentCell to visted list and set to visited
             visited.push(currentCell);
             currentCell.isVisited = true;
-            if (!(currentCell.isGoal || currentCell.isStart)) {
-                document.getElementById(currentCell.y + "-" + currentCell.x).style.backgroundColor = VISITED_COLOR;
-                await sleep(timer);
+            if (!(currentCell.isTarget || currentCell.isStart)) {
+                await colorCell(currentCell, VISITED_COLOR, pathExists);
             }
 
             // Remove current cell from unvisited list
             removeByIndex(currentCell, unvisited);
 
-            if (currentCell.isGoal == true) {
-                console.log("found goal")
+            // trace back path
+            if (currentCell.isTarget == true) {
                 finished = true;
-                // trace back path
-                let hasPrevious = true;
-                let previous = currentCell.previous;
 
-                while (hasPrevious) {
-                    if (!previous.previous) {
-                        hasPrevious = false;
-                    }
-                    // color
-                    if(!previous.isStart){
-                        console.log(previous)
-                         document.getElementById(previous.y + "-" + previous.x).style.backgroundColor = CURRENT_COLOR;
-                        await sleep(timer)
-                    
-                    }
-                       
-                    previous = previous.previous;
-                }
+                await getPath(currentCell, CURRENT_COLOR,pathExists);
             }
         }
     }
 
+}
+
+async function colorCell(cell, color, pathExists) {
+    let x = cell.x, y = cell.y;
+    if (!(cell.isTarget || cell.isStart)) {
+        document.getElementById(y + "-" + x).style.backgroundColor = color;
+        if (!pathExists) await sleep(10)
+
+    }
+}
+async function getPath(currentCell, CURRENT_COLOR, pathExists) {
+    let hasPrevious = true;
+    let previous = currentCell.previous;
+
+    while (hasPrevious) {
+        if (!previous.previous) {
+            hasPrevious = false;
+        }
+        // color
+        if (!previous.isStart) {
+            document.getElementById(previous.y + "-" + previous.x).style.backgroundColor = CURRENT_COLOR;
+            if (!pathExists) await sleep(30)
+        }
+        previous = previous.previous;
+    }
 }
 
 function getLowestCostUnvisitedCell(unvisitedList) {

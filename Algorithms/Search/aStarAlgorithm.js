@@ -32,7 +32,6 @@ export async function aStar(x, y, goalX, goalY, board) {
         } else {
             // Get the unvisted cell with the lowest fscore
             currentCell = getMinFScore(unvisited);
-            console.log(currentCell);
             document.getElementById(currentCell.y + "-" + currentCell.x).style.backgroundColor = "red";
             await sleep(30);
 
@@ -56,20 +55,19 @@ export async function aStar(x, y, goalX, goalY, board) {
                     // Check if gscore is less than cells current gscore
                     if (newGscore < neighbour.gscore) {
                         // update gscore, fscore and previous
-                       
                         neighbour.gscore = newGscore;
-                        neighbour.fscore = newGscore + heuristic(neighbour.x,neighbour.y, goalX, goalY);
-                       console.log("a",currentCell);
+                        neighbour.fscore = newGscore + heuristic(neighbour.x, neighbour.y, goalX, goalY);
+                        console.log("a", currentCell);
                         neighbour.previous = currentCell;
-                         console.log("neighbour",neighbour)
-                     
+                        console.log("neighbour", neighbour)
+
                     }
                 }
 
                 // Add current cell to visited list
                 currentCell.visited = true;
                 visited.push(currentCell);
-                
+
                 // remove current cell from unvisited list
                 removeByIndex(currentCell, unvisited);
                 console.log("unvisited length", unvisited.length)
@@ -98,7 +96,7 @@ function heuristic(x, y, goalX, goalY) {
     dx = Math.abs(x - goalX);
     dy = Math.abs(y - goalY);
 
-    console.log((dx + dy))
+    console.log("x", x, "y", y, "distance", (dx + dy))
     return (dx + dy);
 }
 

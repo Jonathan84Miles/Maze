@@ -1,20 +1,17 @@
 import { getCurrentColor, getPathColor, getVisitedColor, getWallColor } from "../../script.js";
 
-let timer = 20;
-export async function breadthFirstSearch(startX, startY, goalX, goalY, board) {
-    console.log("start board", board)
+let timer = 10;
+export async function breadthFirstSearch(startX, startY, targetX, targetY, board,pathExists) {
     initialise(board)
-    let finish = await search(startX, startY, goalX, goalY, board);
+    let finish = await search(startX, startY, targetX, targetY, board,pathExists);
     let path = getPath(finish);
-    await drawPath(path, board, getCurrentColor());
-    console.log(board[startY][startX]);
-    console.log(board);
+    await drawPath(path, getCurrentColor(),pathExists);
+
 }
 
 // Cells may be marked visited from the maze generation 
 // algorithm so mark all cells unvisited before starting search
 function initialise(board) {
-    console.log("start", board)
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[0].length; j++) {
             board[i][j].isVisited = false;
@@ -22,10 +19,10 @@ function initialise(board) {
     }
 }
 
-async function search(startX, startY, goalX, goalY, board) {
+async function search(startX, startY, targetX, targetY, board,pathExists) {
     const CURRENT_COLOR = getCurrentColor();
     const VISITED_COLOR = getVisitedColor();
-    console.log("search board", board)
+
     let queue = [];
     let neighbours = [];
     let root, curr;
@@ -37,18 +34,17 @@ async function search(startX, startY, goalX, goalY, board) {
     while (queue.length > 0) {
         let x, y;
         curr = queue.shift();
-        console.log("current", curr);
         x = curr.x;
         y = curr.y;
-        if (!(x == startX && y == startY) && !(x == goalX && y == goalY)) {
-            document.getElementById(y + "-" + x).style.backgroundColor = CURRENT_COLOR;
+        if (!(x == startX && y == startY) && !(x == targetX && y == targetY)) {
+           let cell =board[y][x];
+           await colorCell(cell, CURRENT_COLOR,pathExists);
         }
 
-        await sleep(timer);
+       // await sleep(timer);
 
-        if (x == goalX && y == goalY) {
-            // Found goal
-            console.log("found goal")
+        if (x == targetX && y == targetY) {
+            // Found target
             return curr;
         }
 
@@ -60,17 +56,25 @@ async function search(startX, startY, goalX, goalY, board) {
             board[y][x].parent = curr;
 
         }
-        if (!(x == startX && y == startY) && !(x == goalX && y == goalY)) {
-            document.getElementById(y + "-" + x).style.backgroundColor = VISITED_COLOR;
+        if (!(x == startX && y == startY) && !(x == targetX && y == targetY)) {
+            let cell =  board[y][x];
+            await colorCell(cell,VISITED_COLOR,pathExists);
         }
     }
 }
 
-async function drawPath(path, board, CURRENT_COLOR) {
-    console.log("drawing path")
+async function colorCell(cell, color, pathExists) {
+    let x = cell.x, y = cell.y;
+    if (!(cell.isTarget || cell.isStart)) {
+        document.getElementById(y + "-" + x).style.backgroundColor = color;
+        if (pathExists == false) await sleep(timer)
+    }
+}
+
+async function drawPath(path, CURRENT_COLOR,pathExists) {
     for (let i = 1; i < path.length; i++) {
         document.getElementById(path[i][1] + "-" + path[i][0]).style.backgroundColor = CURRENT_COLOR
-        await sleep(timer);
+        if (pathExists == false)  await sleep(30);
     }
 }
 
@@ -88,7 +92,6 @@ function getPath(cell) {
 function getNeighbours(cell, board) {
     let neighbours = [];
     let x = cell.x, y = cell.y;
-    console.log(cell)
     // Up
     if (y + 1 < board.length && board[y + 1][x].isVisited == false && board[y + 1][x].isPath == true) {
         neighbours.push([x, (y + 1)]);
@@ -100,12 +103,12 @@ function getNeighbours(cell, board) {
     }
 
     // Down
-    if (y - 1 > 0 && board[y - 1][x].isVisited == false && board[y - 1][x].isPath == true) {
+    if (y - 1 >= 0 && board[y - 1][x].isVisited == false && board[y - 1][x].isPath == true) {
         neighbours.push([x, (y - 1)]);
     }
 
     // Left
-    if (x - 1 > 0 && board[y][x - 1].isVisited == false && board[y][x - 1].isPath == true) {
+    if (x - 1 >= 0 && board[y][x - 1].isVisited == false && board[y][x - 1].isPath == true) {
         neighbours.push([(x - 1), y]);
     }
 
